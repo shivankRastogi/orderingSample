@@ -1,4 +1,4 @@
-package org.example.service.impl;
+package org.shivank.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,13 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.example.enums.Gender;
-import org.example.models.UserDetails;
-import org.example.service.UserService;
+import org.apache.commons.lang3.tuple.Pair;
+import org.shivank.enums.Gender;
+import org.shivank.models.UserDetails;
+import org.shivank.service.UserService;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Data
@@ -21,22 +20,30 @@ import java.util.Map;
 @Builder
 @Slf4j
 public class UserServiceImpl implements UserService {
+    private Map<String, UserDetails> mobileNumberWiseUserView = new HashMap<>();
+    private String currentLoggedInUserMobileNumber = null;
 
 
-    public UserDetails loginUser(String mobileNumber, Map<String, UserDetails> mobileNumberWiseUserView, String currentLoggedInUserMobileNumber) {
+
+    @Override
+    public UserDetails loginUser(String mobileNumber) {
           if(!mobileNumberWiseUserView.containsKey(mobileNumber)){
               log.error("User not found");
+              return null;
           }
           currentLoggedInUserMobileNumber = mobileNumber;
           return mobileNumberWiseUserView.get(mobileNumber);
     }
 
-    public UserDetails registerUser(String mobileNumber, String gender, String name, String pincode, Map<String, UserDetails> mobileNumberWiseUserView)  {
+    @Override
+    public UserDetails registerUser(String mobileNumber, String gender, String name, String pincode)  {
         if(StringUtils.isAnyBlank(mobileNumber)){
            log.error("Mobile number is blank");
+           return null;
         }
         if(mobileNumberWiseUserView.containsKey(mobileNumber)){
             log.error("Mobile number is already registered");
+            return null;
         }
         UserDetails newUser= UserDetails.builder()
                 .phoneNumber(mobileNumber)
@@ -46,6 +53,17 @@ public class UserServiceImpl implements UserService {
                 .build();
         mobileNumberWiseUserView.put(mobileNumber,newUser);
         return newUser;
+    }
+
+    @Override
+    public UserDetails getLoggedInUser()
+    {
+        if(currentLoggedInUserMobileNumber==null)
+        {
+            log.warn("No user logged in");
+            return null;
+        }
+        return mobileNumberWiseUserView.get(currentLoggedInUserMobileNumber);
     }
 
 

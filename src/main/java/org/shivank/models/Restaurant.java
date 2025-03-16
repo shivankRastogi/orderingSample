@@ -1,4 +1,4 @@
-package org.example.models;
+package org.shivank.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

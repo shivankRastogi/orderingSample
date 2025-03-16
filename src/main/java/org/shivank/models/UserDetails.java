@@ -1,7 +1,7 @@
-package org.example.models;
+package org.shivank.models;
 
     import lombok.*;
-    import org.example.enums.Gender;
+    import org.shivank.enums.Gender;
 
     @Data
     @Builder

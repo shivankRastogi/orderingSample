@@ -1,4 +1,4 @@
-package org.example.models;
+package org.shivank.models;
 
 
 import lombok.*;
@@ -12,4 +12,5 @@ public class Order {
     String restaurantName;
     Integer quantity;
     Integer orderId;
+    String userMobileNumber;
 }

@@ -1,11 +1,12 @@
-package org.example.service.impl;
+package org.shivank.service.impl;
 
 import lombok.*;
         import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.example.enums.SortCriteria;
-import org.example.models.Restaurant;
-import org.example.models.UserDetails;
+import org.shivank.enums.SortCriteria;
+import org.shivank.models.Order;
+import org.shivank.models.Restaurant;
+import org.shivank.service.RestaurantService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,14 +17,18 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Getter
 @Slf4j
-public class RestaurantServiceImpl {
+public class RestaurantServiceImpl implements RestaurantService {
+    private Map<String, Restaurant> restaurantNameWiseMap = new HashMap<>();
 
-    public Restaurant registerRestaurant(String restaurantName, String locality, String dish, int quantity, int price, Map<String, Restaurant> restaurantNameWiseMap) {
+    @Override
+    public Restaurant registerRestaurant(String restaurantName, String locality, String dish, int quantity, int price) {
         if(restaurantNameWiseMap.containsKey(restaurantName)){
             log.error("Restaurant already exists");
+            return  null;
         }
         if(StringUtils.isAnyBlank(restaurantName, locality, dish)){
             log.error("Restaurant name, or locality, or dish, or price are blank");
+            return  null;
         }
         Restaurant restaurant = Restaurant.builder()
                 .address(locality)
@@ -34,13 +39,14 @@ public class RestaurantServiceImpl {
                 .numberOfRatings(0)
                 .totalRatingSum(0)
                 .averageRating(0)
-                .comments(Collections.emptyList())
+                .comments(new ArrayList<>())
                 .build();
         restaurantNameWiseMap.put(restaurantName, restaurant);
         return restaurant;
     }
 
-    public List<Restaurant> showRestaurants(String sortCriteria,Map<String, Restaurant> restaurantNameWiseMap ) {
+    @Override
+    public List<Restaurant> showRestaurants(String sortCriteria ) {
         if (StringUtils.isBlank(sortCriteria)) {
             log.error("SortCriteria is blank");
             return null;
@@ -52,7 +58,7 @@ public class RestaurantServiceImpl {
         return sortCriteria.equals(SortCriteria.RATING.name()) ? restaurantNameWiseMap.values()
                 .stream()
                 .filter(Objects::nonNull)
-                .sorted(Comparator.comparing(Restaurant::getAverageRating))
+                .sorted(Comparator.comparing(Restaurant::getAverageRating,Comparator.reverseOrder()))
                 .collect(Collectors.toList()) :
                 restaurantNameWiseMap.values()
                         .stream()
@@ -62,7 +68,8 @@ public class RestaurantServiceImpl {
 
     }
 
-    public Restaurant giveReview(String restaurantName, String review, String rating, Map<String, Restaurant> restaurantNameWiseMap) {
+    @Override
+    public Restaurant giveReview(String restaurantName, String review, String rating) {
 
         if(StringUtils.isAnyBlank(restaurantName, rating)){
             log.error("Restaurant name, or rating are blank");
@@ -87,7 +94,8 @@ public class RestaurantServiceImpl {
     }
 
 
-    public Restaurant updatePrice(String restaurantName, int price, Map<String, Restaurant> restaurantNameWiseMap) {
+    @Override
+    public Restaurant updatePrice(String restaurantName, int price) {
         if(StringUtils.isAnyBlank(restaurantName)){
             log.error("Restaurant name is blank");
             return null;
@@ -97,13 +105,26 @@ public class RestaurantServiceImpl {
         restaurantNameWiseMap.put(restaurantName, restaurant);
         return restaurant;
     }
-    public Restaurant updateQuantity(String restaurantName, int quantity, Map<String, Restaurant> restaurantNameWiseMap) {
+    @Override
+    public Restaurant updateQuantity(String restaurantName, int quantity) {
         if(StringUtils.isAnyBlank(restaurantName)){
             log.error("Restaurant name is blank");
+            return null;
         }
         Restaurant restaurant = restaurantNameWiseMap.get(restaurantName);
         restaurant.setQuantity(quantity);
         restaurantNameWiseMap.put(restaurantName, restaurant);
         return restaurant;
+    }
+
+    @Override
+    public Restaurant getRestaurant(String restaurantName)
+    {
+        if(StringUtils.isEmpty(restaurantName))
+        {
+            log.warn("empty restaurant name passed");
+            return null;
+        }
+        return restaurantNameWiseMap.get(restaurantName);
     }
     }
