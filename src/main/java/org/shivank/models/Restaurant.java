@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Data
-@NoArgsConstructor
+@Data //Data already have noArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Restaurant {

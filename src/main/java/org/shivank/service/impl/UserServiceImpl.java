@@ -20,8 +20,8 @@ import java.util.Map;
 @Builder
 @Slf4j
 public class UserServiceImpl implements UserService {
-    private Map<String, UserDetails> mobileNumberWiseUserView = new HashMap<>();
-    private String currentLoggedInUserMobileNumber = null;
+    private Map<String, UserDetails> mobileNumberWiseUserView ; //key is mobile number
+    private String currentLoggedInUserMobileNumber ;
 
 
 

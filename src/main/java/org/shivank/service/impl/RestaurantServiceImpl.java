@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Getter
 @Slf4j
 public class RestaurantServiceImpl implements RestaurantService {
-    private Map<String, Restaurant> restaurantNameWiseMap = new HashMap<>();
+    private Map<String, Restaurant> restaurantNameWiseMap;
 
     @Override
     public Restaurant registerRestaurant(String restaurantName, String locality, String dish, int quantity, int price) {

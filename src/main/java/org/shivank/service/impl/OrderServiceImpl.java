@@ -22,8 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @NoArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private AtomicInteger orderId ;
-    private List<Order> orderList = new ArrayList<>();
-    private Map<String, List<Order>> userWiseOrders  = new HashMap<>();
+    private List<Order> orderList ;
+    private Map<String, List<Order>> userWiseOrders ;
 
     private RestaurantService restaurantService;
 
